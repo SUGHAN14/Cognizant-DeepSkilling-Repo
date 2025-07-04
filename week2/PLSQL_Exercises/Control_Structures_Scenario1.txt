@@ -1,0 +1,18 @@
+DECLARE
+  CURSOR c_senior_customers IS
+    SELECT c.CUSTOMER_ID, l.INTEREST_RATE
+    FROM CUSTOMERS c
+    JOIN LOANS l ON c.CUSTOMER_ID = l.CUSTOMER_ID
+    WHERE c.AGE > 60;
+
+BEGIN
+  FOR rec IN c_senior_customers LOOP
+    UPDATE LOANS
+    SET INTEREST_RATE = INTEREST_RATE - 1
+    WHERE CUSTOMER_ID = rec.CUSTOMER_ID;
+
+    DBMS_OUTPUT.PUT_LINE('Applied 1% discount to customer ID: ' || rec.CUSTOMER_ID);
+  END LOOP;
+
+  COMMIT;
+END;

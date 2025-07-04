@@ -1,0 +1,11 @@
+CREATE OR REPLACE PROCEDURE ProcessMonthlyInterest AS
+BEGIN
+  UPDATE ACCOUNTS
+  SET BALANCE = BALANCE + (BALANCE * 0.01)
+  WHERE ACCOUNT_TYPE = 'SAVINGS';
+
+  COMMIT;
+
+  DBMS_OUTPUT.PUT_LINE('Monthly interest processed for savings accounts.');
+END;
+/

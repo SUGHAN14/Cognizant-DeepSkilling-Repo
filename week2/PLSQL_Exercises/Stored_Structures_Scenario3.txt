@@ -1,0 +1,30 @@
+CREATE OR REPLACE PROCEDURE TransferFunds(
+  p_source_account_id IN NUMBER,
+  p_target_account_id IN NUMBER,
+  p_amount IN NUMBER
+) AS
+  v_source_balance NUMBER;
+BEGIN
+  SELECT BALANCE INTO v_source_balance
+  FROM ACCOUNTS
+  WHERE ACCOUNT_ID = p_source_account_id
+  FOR UPDATE;
+
+  IF v_source_balance < p_amount THEN
+    RAISE_APPLICATION_ERROR(-20001, 'Insufficient funds in source account.');
+  END IF;
+
+  UPDATE ACCOUNTS
+  SET BALANCE = BALANCE - p_amount
+  WHERE ACCOUNT_ID = p_source_account_id;
+
+  UPDATE ACCOUNTS
+  SET BALANCE = BALANCE + p_amount
+  WHERE ACCOUNT_ID = p_target_account_id;
+
+  COMMIT;
+
+  DBMS_OUTPUT.PUT_LINE('Transferred ' || p_amount || ' from account ' ||
+                       p_source_account_id || ' to ' || p_target_account_id);
+END;
+/

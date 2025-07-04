@@ -1,0 +1,13 @@
+DECLARE
+  CURSOR c_due_loans IS
+    SELECT l.CUSTOMER_ID, c.NAME, l.DUE_DATE
+    FROM LOANS l
+    JOIN CUSTOMERS c ON l.CUSTOMER_ID = c.CUSTOMER_ID
+    WHERE l.DUE_DATE <= SYSDATE + 30;
+
+BEGIN
+  FOR rec IN c_due_loans LOOP
+    DBMS_OUTPUT.PUT_LINE('Reminder: Loan for customer ' || rec.NAME ||
+                         ' (ID: ' || rec.CUSTOMER_ID || ') is due on ' || TO_CHAR(rec.DUE_DATE, 'DD-MON-YYYY'));
+  END LOOP;
+END;
